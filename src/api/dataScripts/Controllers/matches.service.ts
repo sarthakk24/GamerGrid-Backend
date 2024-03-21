@@ -24,18 +24,20 @@ export const handleMatches = async (
     const configuredMatches = []
 
     for (const match of matches) {
-        if (match.team1 && match.team2) {
-            let team1Details = await PassiveTeamsCollection.findOne({
-                id: match.team1.id,
-            })
-            let team2Details = await PassiveTeamsCollection.findOne({
-                id: match.team2.id,
-            })
+        const output: any = { ...match }
+        if (match.team1) {
+            let team1Details = match.team1.id
+                ? await PassiveTeamsCollection.findOne({
+                      id: match.team1.id,
+                  })
+                : null
 
             if (!team1Details) {
                 let team1Details = await HLTV.getTeam({
                     id: match.team1.id,
                 })
+
+                console.log(team1Details.name)
 
                 delete team1Details.news
                 delete team1Details.rankingDevelopment
@@ -43,19 +45,32 @@ export const handleMatches = async (
                 await PassiveTeamsCollection.insertOne(team1Details)
             }
 
+            output.team1Details = team1Details
+        }
+
+        if (match.team2) {
+            let team2Details = match.team2.id
+                ? await PassiveTeamsCollection.findOne({
+                      id: match.team2.id,
+                  })
+                : null
+
             if (!team2Details) {
                 let team2Details = await HLTV.getTeam({
                     id: match.team2.id,
                 })
+
+                console.log(team2Details.name)
                 delete team2Details.news
                 delete team2Details.rankingDevelopment
                 match.team2 = team2Details
                 await PassiveTeamsCollection.insertOne(team2Details)
             }
+            output.team2Details = team2Details
         }
 
         configuredMatches.push({
-            ...match,
+            ...output,
         })
     }
 

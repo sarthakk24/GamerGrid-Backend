@@ -12,7 +12,6 @@ import {
 
 const ScraperRouter = Router()
 
-ScraperRouter.get('/', handleMatches)
 ScraperRouter.get('/match', handleMatch)
 ScraperRouter.get('/player', handlePlayer)
 ScraperRouter.get('/matches', handleMatches)

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { DBInstance } from '../../../loaders/database'
+import { HLTV } from 'hltv'
 
 export const handleLeagues = async (
     req: Request,
@@ -13,6 +14,19 @@ export const handleLeagues = async (
 
     res.status(201).json({
         ...leagues,
+        success: true,
+    })
+}
+
+export const handleUnique = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    const matches = await HLTV.getEvent({ id: Number(req.params.id) })
+
+    res.status(201).json({
+        ...matches,
         success: true,
     })
 }

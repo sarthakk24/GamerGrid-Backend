@@ -26,10 +26,8 @@ export const handleMatch = async (
     res: Response,
     next: NextFunction
 ) => {
-    const matchDetails = await HLTV.getMatch({ id: 2370120 })
+    const matchDetails = await HLTV.getMatch({ id: Number(req.params.id) })
 
-    delete matchDetails.maps
-    delete matchDetails.hasScorebot
     delete matchDetails.vetoes
     delete matchDetails.highlights
     delete matchDetails.demos
@@ -37,6 +35,22 @@ export const handleMatch = async (
 
     res.status(201).json({
         ...matchDetails,
+        // ...matchStats,
+        success: true,
+    })
+}
+
+export const handleMap = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    const mapDetails = await HLTV.getMatchMapStats({
+        id: Number(req.params.id),
+    })
+
+    res.status(201).json({
+        ...mapDetails,
         success: true,
     })
 }
